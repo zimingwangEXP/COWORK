@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <tabs>
+    <Tab text="状态">
+         <content>
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="379.0" fitWidth="612.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@res/background.png" />
+                     </image>
+                  </ImageView>
+                  <TextArea id="status" opacity="0.21" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: null;" />
+               </children>
+            </StackPane>
+         </content></Tab>
+    <Tab id="monitor" text="聊天监控">
+         <content>
+            <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <TextArea prefHeight="371.0" prefWidth="176.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ListView layoutX="9.0" layoutY="14.0" prefHeight="137.0" prefWidth="158.0" />
+                        <DatePicker layoutX="11.0" layoutY="296.0" prefHeight="25.0" prefWidth="155.0" />
+                        <ListView layoutX="9.0" layoutY="161.0" prefHeight="121.0" prefWidth="158.0" />
+                        <Button layoutX="103.0" layoutY="334.0" mnemonicParsing="false" text="开始监控" />
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <TextArea layoutX="14.0" layoutY="44.0" prefHeight="371.0" prefWidth="418.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </content></Tab>
+      <Tab id="statistics" text="统计分析">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TextField layoutX="182.0" layoutY="32.0" prefHeight="30.0" prefWidth="255.0" />
+                  <Label layoutX="125.0" layoutY="39.0" text="用户id:" />
+               </children></AnchorPane>
+        </content>
+      </Tab>
+      <Tab id="error_list" text="错误列表">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Pagination layoutX="135.0" layoutY="63.0" prefHeight="371.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children></AnchorPane>
+        </content>
+      </Tab>
+  </tabs>
+</TabPane>
