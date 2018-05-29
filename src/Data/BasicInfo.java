@@ -3,6 +3,7 @@ package Data;
 import java.io.Serializable;
 
 public class BasicInfo implements Serializable {
+    protected String adrress=null;
     protected String nick_name=null;
     protected String id;
     protected String password=null;
@@ -15,6 +16,7 @@ public class BasicInfo implements Serializable {
     protected ClientStatus status=null;
     boolean sex=false;
     public static class BasicInfoBuilder {
+        protected String address=null;
         protected String id;
         protected String nick_name = null;
         protected String password = null;
@@ -78,6 +80,11 @@ public class BasicInfo implements Serializable {
         this.solution=build.solution;
         this.status=build.status;
         this.nick_name=build.nick_name;
+        this.adrress=build.address;
+    }
+
+    public String getAdrress() {
+        return adrress;
     }
 
     public ClientStatus getStatus() {
