@@ -1,7 +1,7 @@
 package Server;
 
-import Connection.Connection;
-import Connection.BasicInfoTransition;
+import CommonBase.Connection.BasicInfoTransition;
+import CommonBase.Connection.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;

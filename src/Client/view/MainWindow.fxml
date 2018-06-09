@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.view.MainWindowController">
+  <items>
+    <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="80.0">
+         <children>
+            <VBox>
+               <children>
+                  <VBox>
+                     <children>
+                        <Button maxWidth="80.0" mnemonicParsing="false" onAction="#handleRecentDialog" prefHeight="80.0" prefWidth="80.0" text="最近聊天">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                        <Button maxWidth="80.0" mnemonicParsing="false" onAction="#handleFriendList" prefHeight="80.0" prefWidth="80.0" text="好友">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                        <Button maxWidth="80.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="80.0" text="讨论组">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true">
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="2.0" layoutY="76.0" maxWidth="80.0" mnemonicParsing="false" onAction="#handleAddFriend" prefHeight="80.0" prefWidth="80.0" text="+好友">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                        <Button maxWidth="80.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="80.0" text="黑名单">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <Button layoutX="14.0" layoutY="760.0" mnemonicParsing="false" onAction="#handleMenuShow" prefHeight="50.0" text="个人状态" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </Button>
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0">
+         <children>
+            <SplitPane dividerPositions="0.19584837545126355" prefHeight="798.0" prefWidth="1110.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <SplitPane dividerPositions="0.5" layoutX="27.0" layoutY="160.0" orientation="VERTICAL" prefHeight="796.0" prefWidth="213.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                              <TextField fx:id="friendSearch" prefHeight="50.0" prefWidth="211.0" promptText="查找好友" />
+                              <StackPane prefHeight="150.0" prefWidth="200.0">
+                                 <children>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                       <children>
+                                          <TreeView fx:id="FriendList" prefHeight="736.0" prefWidth="211.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                       <children>
+                                          <ListView fx:id="recentDialog" prefHeight="736.0" prefWidth="211.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox fx:id="menuShow" layoutY="316.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="300.0">
+                                                   <children>
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleOnLine" prefHeight="40.0" prefWidth="175.0" text="在线" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleBusy" prefHeight="40.0" prefWidth="175.0" text="忙碌" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCloaking" prefHeight="40.0" prefWidth="175.0" text="隐身" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox AnchorPane.bottomAnchor="210.0">
+                                                   <children>
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handlePersonZone" prefHeight="40.0" prefWidth="175.0" text="个人资料" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleChangePassword" prefHeight="40.0" prefWidth="175.0" text="修改密码" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="175.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                                   <children>
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAbout" prefHeight="40.0" prefWidth="175.0" text="关于" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleSetting" prefHeight="40.0" prefWidth="175.0" text="设置" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleTheme" prefHeight="40.0" prefWidth="175.0" text="主题" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleLogOut" prefHeight="40.0" prefWidth="175.0" text="注销" />
+                                                      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleExit" prefHeight="40.0" prefWidth="175.0" text="退出" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children></StackPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <SplitPane layoutX="398.0" layoutY="188.0" orientation="VERTICAL" prefHeight="796.0" prefWidth="887.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <SplitPane dividerPositions="0.06691919191919192, 0.6641414141414141, 0.9305555555555556" layoutX="224.0" layoutY="106.0" orientation="VERTICAL" prefHeight="393.0" prefWidth="885.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <items>
+                                          <AnchorPane maxHeight="-Infinity" prefHeight="50.0" prefWidth="883.0" SplitPane.resizableWithParent="false">
+                                             <children>
+                                                <Button fx:id="curFriendNote" layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleFriendNicknameClicked" prefWidth="80.0" text="备注" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="0.0">
+                                                   <graphic>
+                                                      <ImageView pickOnBounds="true" preserveRatio="true" />
+                                                   </graphic>
+                                                   <tooltip>
+                                                      <Tooltip text="用户原本昵称" />
+                                                   </tooltip>
+                                                </Button>
+                                                <Button layoutX="703.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleFileRecords" text="文件" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="0.0" />
+                                                <Button layoutX="800.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleMessageRecords" text="聊天记录" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0" />
+                                                <ImageView fx:id="protrait" fitHeight="60.0" fitWidth="100.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <viewport>
+                                                      <Rectangle2D height="60.0" width="100.0" />
+                                                   </viewport></ImageView>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane prefHeight="404.0" prefWidth="883.0">
+                                             <children>
+                                                <ListView prefHeight="470.0" prefWidth="883.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <TextArea fx:id="message" layoutX="125.0" layoutY="14.0" prefHeight="214.0" prefWidth="883.0" promptText="输入信息" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane maxHeight="-Infinity" prefHeight="40.0" prefWidth="883.0" SplitPane.resizableWithParent="false">
+                                             <children>
+                                                <Button layoutX="24.0" layoutY="-1.0" mnemonicParsing="false" text="表情" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                                   <graphic>
+                                                      <ImageView pickOnBounds="true" preserveRatio="true" />
+                                                   </graphic>
+                                                </Button>
+                                                <Button layoutX="64.0" layoutY="11.0" mnemonicParsing="false" text="字体" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0">
+                                                   <graphic>
+                                                      <ImageView pickOnBounds="true" preserveRatio="true" />
+                                                   </graphic>
+                                                </Button>
+                                                <Button layoutX="190.0" layoutY="5.0" mnemonicParsing="false" text="预览" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <Button layoutX="295.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSendFile" text="发送文件" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="0.0" />
+                                                <Button layoutX="790.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleSendMessage" text="发送" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
+                                                <Button layoutX="390.0" layoutY="2.0" mnemonicParsing="false" text="视频聊天" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="380.0" AnchorPane.topAnchor="0.0" />
+                                                <Button layoutX="538.0" layoutY="6.0" mnemonicParsing="false" text="语音聊天" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="490.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </items>
+                                    </SplitPane>
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children></AnchorPane>
+              </items>
+            </SplitPane>
+         </children></AnchorPane>
+  </items>
+</SplitPane>
