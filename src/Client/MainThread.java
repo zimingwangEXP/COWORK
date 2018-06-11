@@ -66,8 +66,11 @@ public class MainThread extends Application {
     }
      public void Init(Stage primaryStage){
          BarStage=primaryStage;
-
-     }
+         AnchorPane  ap=new AnchorPane();
+         ap.setPrefSize(256,140);
+         TextArea ta=new TextArea();
+         ap
+    }
      public void LoadRegistStage(){
             try {
                 FXMLLoader loader = new FXMLLoader();
