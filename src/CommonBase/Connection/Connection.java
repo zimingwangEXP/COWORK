@@ -13,6 +13,9 @@ public class Connection {
     protected ObjectOutputStream output=null;
     protected ObjectInputStream input=null;
     protected  Integer default_server_port=12345;
+  public int  getPort() {
+        return connection.getLocalPort();
+    }
     public Connection(){//默认构造函数以服务器地址为目标，建立连接
         try {
             connection=new Socket(InetAddress.getByName("localhost"),default_server_port.intValue());

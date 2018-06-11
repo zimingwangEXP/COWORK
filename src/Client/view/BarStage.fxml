@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="554.0" prefWidth="247.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.view.BarStageHandle">
+   <children>
+      <TextField fx:id="search" alignment="CENTER" layoutY="81.0" prefHeight="23.0" prefWidth="254.0" promptText="搜索">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </TextField>
+      <ImageView fitHeight="88.0" fitWidth="91.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resources/Icon/login.jpg" />
+         </image>
+      </ImageView>
+      <Text fx:id="nick_name" layoutX="86.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nick_name" wrappingWidth="168.30029296875">
+         <font>
+            <Font name="Comic Sans MS" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="id" layoutX="86.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="icsy_user_name" wrappingWidth="168.30029296875">
+         <font>
+            <Font name="Comic Sans MS" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="status" layoutX="86.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="status" wrappingWidth="168.30029296875">
+         <font>
+            <Font name="Comic Sans MS" size="15.0" />
+         </font>
+      </Text>
+      <HBox layoutX="-2.0" layoutY="510.0" prefHeight="43.0" prefWidth="254.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#ModifyBasicInfo" prefHeight="59.0" prefWidth="67.0" text="修改基本信息" textFill="#1b1a1a" wrapText="true" />
+            <Button mnemonicParsing="false" onAction="#AddFriend" prefHeight="59.0" prefWidth="67.0" text="在线添加好友" wrapText="true" />
+            <Button fx:id="settings" mnemonicParsing="false" onAction="#Settings" prefHeight="59.0" prefWidth="67.0" text="个人设置" wrapText="true" />
+            <Button mnemonicParsing="false" onAction="#ModifyBlackList" prefHeight="59.0" prefWidth="67.0" text="修改黑名单" wrapText="true" />
+         </children>
+      </HBox>
+      <TabPane layoutY="104.0" prefHeight="407.0" prefWidth="254.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="好友组">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TreeView fx:id="group_list" layoutX="-2.0" layoutY="-3.0" prefHeight="384.0" prefWidth="254.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="会话">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

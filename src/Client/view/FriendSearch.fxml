@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
 <?import java.lang.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
 
-<SplitPane dividerPositions="0.20100502512562815" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.20100502512562815" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.view.SearchFriendHandle">
   <items>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="800.0" SplitPane.resizableWithParent="false">
          <children>
-            <TextField layoutX="28.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="500.0" promptText="输入ID" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0" />
-            <Button layoutX="480.0" layoutY="21.0" mnemonicParsing="false" text="搜索" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
+            <TextField id="id" fx:id="id" layoutX="28.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="500.0" promptText="输入ID" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0" />
+            <Button id="search" layoutX="480.0" layoutY="21.0" mnemonicParsing="false" onAction="#SearchHandle" text="搜索" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0">
+    <AnchorPane  minHeight="0.0" minWidth="0.0" prefHeight="574.0" prefWidth="798.0">
          <children>
-            <StackPane prefHeight="640.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <ListView fixedCellSize="5.0" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </StackPane>
+            <Label layoutX="7.0" layoutY="6.0" prefHeight="41.0" prefWidth="111.0" text="详细信息:" />
+            <TextArea id="info" fx:id="info" layoutX="25.0" layoutY="47.0" prefHeight="500.0" prefWidth="315.0" />
+            <TextArea id="pass" fx:id="pass" layoutX="516.0" layoutY="47.0" prefHeight="168.0" prefWidth="200.0" />
+            <Button id="ok" layoutX="653.0" layoutY="310.0" mnemonicParsing="false" onAction="#OkHandle" text="加为好友" />
+            <Label layoutX="516.0" layoutY="27.0" text="验证信息:" />
+            <Label layoutX="509.0" layoutY="245.0" text="分组:" />
+            <TextField id="group" fx:id="group" layoutX="556.0" layoutY="241.0" />
          </children></AnchorPane>
   </items>
 </SplitPane>

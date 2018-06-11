@@ -27,11 +27,10 @@ public class Account {
 	private Image protrait=new Image("file:resources/images/Head/User/1_350.png");
 	private StringProperty phoneNumber=new SimpleStringProperty();
 	private StringProperty department=new SimpleStringProperty();
-	static Integer accountCount=new Integer(0);
+	static Integer accountCount=new Integer(0);//删掉?
 	
 	public Account() {	}
-	public void applyOneNewAccount() {
-		String temp=accountCount.toString();
+	public void applyOneNewAccount() {//删掉?
 		ID.set("10086"+accountCount.toString());
 		accountCount++;
 	}
@@ -106,5 +105,26 @@ public class Account {
 	}
 	public String getID() {
 		return ID.get();
+	}
+	public void setStatus(int status) {
+		this.status.set(status);
+	}
+	public void setAge(int age) {
+		this.age.set(age);
+	}
+	public void setID(String ID) {
+		this.ID.set(ID);
+	}
+	public static void setAccountCount(Integer accountCount) {
+		Account.accountCount = accountCount;
+	}
+	public void setBlackList(ObservableList<Friend> blackList) {
+		this.blackList = blackList;
+	}
+	public void setFriendList(ObservableList<Friend> friendList) {
+		this.friendList = friendList;
+	}
+	public void setProtrait(Image protrait) {
+		this.protrait = protrait;
 	}
 }

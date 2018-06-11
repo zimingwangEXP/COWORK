@@ -1,6 +1,5 @@
 package Client.view;
 
-import Client.application.UserInfoBuffer;
 import Client.util.*;
 
 import java.awt.Checkbox;
@@ -73,7 +72,7 @@ public class SignInController {
 				okClicked=true;
 		}
 		if(okClicked) {
-			dialogStage.close();
+			//dialogStage.close();
 			mainApp.showMainWindow();
 		}
 

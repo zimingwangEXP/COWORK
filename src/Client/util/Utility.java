@@ -8,6 +8,9 @@ import java.time.LocalTime;
 import java.util.Random;
 
 import Client.application.MainApp;
+import CommonBase.CSLinker.CSLinker;
+import CommonBase.Data.ClientStatus;
+import CommonBase.Data.LoginStatus;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -16,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import Client.model.Account;
 
+
 public class Utility {
 	public static boolean IDExist(String id) {
 		return true;
@@ -23,16 +27,40 @@ public class Utility {
 	public static boolean passwordCorrect(String ID,String password) {
 		return true;
 	}
-	
-	/*
-	 ���ϵĽӿں���Ӧ����NET_OP����ʵ��,�˴�������ģ�����
-	 */
-	public static Account getAccountForID(String id,String password) {
-		if(id.length()!=0)
-			//�˴��������������֤��Ϣ,��֤�˻���Ϣ,�Ҳ����ͷ���null
-			return new Account();
+	public static Account getAccountForID(String id,String password) {//修改状态栏
+		if(id.length()!=0) {
+			Account acount=new Account();
+			LoginStatus back=CSLinker.Login(id,password,ClientStatus.online);
+			if(back==LoginStatus.find)
+			{
+				return CSLinker.TranseToAcount();
+			}
+			else if(back==LoginStatus.password_error)
+			{
+				Utility.showExceptionDialog("密码输入错误", AlertType.INFORMATION);
+				return null;
+			}
+			else if(back==LoginStatus.username_error)
+			{
+				Utility.showExceptionDialog("用户名不存在", AlertType.INFORMATION);
+                return null;
+			}
+			else
+				return null;
+		}
 		else
 			return null;
+	}
+	public static  int   getIndex(ClientStatus status){
+		if(status==ClientStatus.online)
+			return 1;
+		if(status==ClientStatus.susupend)
+			return 2;
+		if(status==ClientStatus.busy)
+			return 3;
+		if(status==ClientStatus.stealth)
+			return 4;
+		return 0;
 	}
 	public static String getStatus(Integer i) {
 		switch(i) {

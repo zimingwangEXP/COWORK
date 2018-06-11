@@ -1,6 +1,5 @@
 package CommonBase.CSLinker;
 
-import Client.application.UserInfoBuffer;
 import CommonBase.Connection.BasicInfoTransition;
 import CommonBase.Connection.Connection;
 import CommonBase.Connection.SuperInfoTransition;
@@ -8,12 +7,19 @@ import CommonBase.Data.*;
 import com.sun.xml.internal.bind.v2.model.core.ID;
 import CommonBase.Log.*;
 import Server.ServerData.*;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Observable;
 
 /*
     Connection,BasicInfoTransition,SuperInfoTransition已经为客户端和服务器提供了多样的网络操作
@@ -21,9 +27,9 @@ import java.util.LinkedList;
  */
 public class CSLinker {
    private static Log log=new Log();
-   private static BasicInfo bf=null;
-   private static SuperInfo sf=null;
-   private static BasicInfoTransition bf_trans_to_server;
+   private static BasicInfo bf=new BasicInfo.BasicInfoBuilder(null,null).Builder();
+   private static SuperInfo sf=new SuperInfo(null,null,null,null);
+   public static BasicInfoTransition bf_trans_to_server;
    static {
       try {
          bf_trans_to_server = new BasicInfoTransition(new Connection(new Socket("localhost",12345)));
@@ -33,16 +39,11 @@ public class CSLinker {
       }
    }
    public  CSLinker(){}
+   public static  boolean HasInit(){return bf_trans_to_server!=null;}
    public static LoginStatus Login(String user_name,String password,ClientStatus status){
     //  bf_trans_to_server.
       bf_trans_to_server.SendLoginInfo(user_name,password,status);//注意修改用户状态
       LoginStatus rt_status=bf_trans_to_server.ClientReceiveLoginInfo(bf,sf);
-      if(rt_status==LoginStatus.find)
-      {
-         //切换到登录界面，开始装载数据
-         UserInfoBuffer.bf=bf;
-         UserInfoBuffer.sf=sf;
-      }
       return rt_status;
    }
    public static String Regist(BasicInfo bf){//返回获得的系统分配用户id
@@ -74,7 +75,7 @@ public class CSLinker {
    }
    public static Integer SendFriendRequest(String id,String content){//返回值为1代表已经被对方加入黑名单，2代表此id不存在，3代表验证消息已离线发送成功,4代表验证消息已在线发送成功
       String[] res=bf_trans_to_server.IdToIp("id");
-      if(res[0].equals("not_online")) {
+      if(res[0].equals("not_on_line")) {
          bf_trans_to_server.SendMessage("add_friend");
          //add_friend应背客户端接受线程处理
          bf_trans_to_server.TemplateSend(new TempSavedInfo(bf.getId(),id,"add_friend",content));
@@ -171,13 +172,13 @@ public class CSLinker {
         }
 
    }
-   public LinkedList<message> GetHistory(String id){
+   public static  LinkedList<message> GetHistory(String id){
       bf_trans_to_server.SendMessage("get_history");
       bf_trans_to_server.SendMessage(id);
       LinkedList<message> res=(LinkedList<message>)bf_trans_to_server.TemplateReceive();
       return res;
    }
-   public void EndConnection(){
+   public static  void EndConnection(){
       bf_trans_to_server.SendMessage("terminal");
    }
 }

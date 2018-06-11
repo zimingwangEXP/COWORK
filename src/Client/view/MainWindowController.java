@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 import Client.application.MainApp;
-import Client.application.UserInfoBuffer;
 import CommonBase.Connection.BasicInfoTransition;
 import CommonBase.Connection.Connection;
 import CommonBase.Data.BasicInfo;
@@ -42,7 +41,7 @@ public class MainWindowController implements  Runnable {
 	@FXML
 	private TextArea message=new TextArea();
 	@FXML
-	private ImageView protrait=new ImageView("resources/Icon/ICSY.png");
+	private ImageView protrait=new ImageView("file:/resources/Icon/ICSY.png");
 	@FXML
 	private TextField friendSearch=new TextField();
 	@FXML
@@ -50,8 +49,15 @@ public class MainWindowController implements  Runnable {
 	@FXML
 	private ListView<Button> recentDialog=new ListView<>();
 	@FXML
-	
-	private ListView<String> messageRecords=new ListView<>(); 
+	private ListView<String> messageRecords=new ListView<>();
+	@FXML
+	private AnchorPane setting;
+	@FXML
+	private AnchorPane  group;
+	@FXML
+	private AnchorPane  black_list;
+	@FXML
+	private AnchorPane  menu;
 	@FXML
 	private VBox menuShow=new VBox();//������ڶ���
 	private MainApp mainApp;
@@ -64,6 +70,7 @@ public class MainWindowController implements  Runnable {
 	@Override
 	public void run() {
     	String message=null;
+    	/*
         do
 		{
 			try {
@@ -72,9 +79,9 @@ public class MainWindowController implements  Runnable {
 				{
 					String from=bf_tran.ReceiveMessage();
 					ClientStatus cur=bf_tran.ReceiveStatus();
-					/*
+
 					    将用户列表中from的状态置为cur，显示
-					 */
+
 				}
 				else if(message.equals("text"))
 				{
@@ -120,7 +127,8 @@ public class MainWindowController implements  Runnable {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-		}while(!message.equals("end"));
+		}while(!message.equals("end"));*/
+
 	}
 	public MainWindowController() {};
 	@FXML
@@ -195,7 +203,7 @@ public class MainWindowController implements  Runnable {
 	@FXML
 	public void handlePersonZone() {//修改个人资料
 
-		UserInfoBuffer.bf_trans_to_server.SendBasicInfo(UserInfoBuffer.bf);
+
 	}
 	@FXML
 	public void handleCloaking() {
@@ -226,11 +234,16 @@ public class MainWindowController implements  Runnable {
 	}
 	@FXML
 	public void handleSendFile() {
-		//��������ӿ�
+
 	}
 	@FXML
 	public void handleAddFriend() {
-		//��ʾ���Һ��Ѵ���
+		group.setVisible(false);
+		menu.setVisible(true);
+		setting.setVisible(false);
+		black_list.setVisible(false);
+		System.out.println(mainApp==null);
+		mainApp.showSearChFriend();
 	}
 	@FXML
 	public void handleSendMessage() {

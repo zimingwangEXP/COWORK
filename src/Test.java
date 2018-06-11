@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class Test {
+
     public static  void main(String[]args)
     {
          //模拟客户端
@@ -37,8 +38,8 @@ public class Test {
             {
                 System.out.println(res);
             }
-            bf_trans1.
-           /* bf_trans2=new BasicInfoTransition(new Connection(new Socket("localhost",12345)));
+           /*  bf_trans1.
+           bf_trans2=new BasicInfoTransition(new Connection(new Socket("localhost",12345)));
             bf_trans2.SendMessage("regist");
             BasicInfo info2=new BasicInfo.BasicInfoBuilder("ac_automata",null).SetAge(18).
                     SetClientStatus(ClientStatus.online).SetJob("student").

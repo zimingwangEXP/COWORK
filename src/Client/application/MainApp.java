@@ -9,9 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import Client.view.MainWindowController;
-import  Client.view.SignInController;
-import  Client.view.SignUpController;
+import Client.view.*;
 import Client.view.SignUpController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -83,6 +81,26 @@ public class MainApp extends Application{
 			e.printStackTrace();
 		}
 	}
+	public void showSearChFriend(){
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("/Client/view/FriendSearch.fxml"));
+			SplitPane pane = (SplitPane) loader.load();
+			Stage dialogStage=new Stage();
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setTitle("查找好友");
+			dialogStage.getIcons().add(new Image("/Client/resources/Icon/ICSY.png"));
+			dialogStage.initOwner(primaryStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			FriendSearchController friendSearchController=loader.getController();
+			friendSearchController.setStage(dialogStage);
+			dialogStage.showAndWait();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	public void showSignInWindow() {
 		try {
 			FXMLLoader loader=new FXMLLoader();
@@ -110,6 +128,7 @@ public class MainApp extends Application{
 	public void showSignUpWindow() {
 		try {
 			FXMLLoader loader=new FXMLLoader();
+			System.out.println(MainApp.class.getResource("/Client/view/SignUp.fxml"));
 			loader.setLocation(MainApp.class.getResource("/Client/view/SignUp.fxml"));
 			AnchorPane pane=(AnchorPane) loader.load();
 			Stage dialogStage=new Stage();
@@ -121,8 +140,10 @@ public class MainApp extends Application{
 			SignUpController controller=loader.getController();
 			controller.setStage(dialogStage);
 			dialogStage.showAndWait();
-			if(controller.isOkClicked())
+			if(controller.isOkClicked()) {
 				accounts.add(controller.getNewAccount());
+				dialogStage.close();
+			}
 				
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -134,7 +155,7 @@ public class MainApp extends Application{
 			loader.setLocation(MainApp.class.getResource("/Client/view/MainWindow.fxml"));
 			SplitPane pane=(SplitPane)loader.load();
 			MainWindowController controller=new MainWindowController();
-			controller.setMainApp(this);
+			controller.setMainApp(new MainApp());
 			controller.setCurAccount(curAccount);
 			Stage primaryStage=new Stage();
 			primaryStage.setTitle("ICSY");

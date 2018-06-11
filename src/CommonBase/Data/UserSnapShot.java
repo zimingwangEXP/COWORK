@@ -17,7 +17,6 @@ public class UserSnapShot implements Serializable {
         this.status=status;
         this.group_id=group_id;
     }
-
     @Override
     public boolean equals(Object obj) {
         UserSnapShot temp=(UserSnapShot)obj;

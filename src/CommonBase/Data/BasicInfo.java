@@ -12,7 +12,7 @@ public class BasicInfo implements Serializable {
     protected String question=null;
     protected String solution=null;
     protected Integer age;
-    protected String birthday=null;
+    protected Date birthday=null;
     protected  String phone_number=null;
     protected String signature=null;
     protected String job=null;
@@ -25,7 +25,7 @@ public class BasicInfo implements Serializable {
         protected String password = null;
         protected String mail_address = null;
         protected String question = null;
-        protected String birthday=null;
+        protected Date birthday=null;
         protected  String phone_number=null;
         protected String solution = null;
         protected Integer age;
@@ -59,7 +59,7 @@ public class BasicInfo implements Serializable {
             return this;
         }
 
-        public BasicInfoBuilder SetBirthday(String birthday) {
+        public BasicInfoBuilder SetBirthday(Date birthday) {
             this.birthday = birthday;
             return this;
         }
@@ -124,6 +124,22 @@ public class BasicInfo implements Serializable {
 
 
     }
+    public void copy(BasicInfo obf) {
+        this.adrress=obf.adrress;
+        this.age=obf.age;
+        this.birthday=obf.birthday;
+        this.id=obf.id;
+        this.job=obf.job;
+        this.mail_address=obf.mail_address;
+        this.nick_name=obf.nick_name;
+        this.password=obf.password;
+        this.phone_number=obf.phone_number;
+        this.sex=obf.sex;
+        this.question=obf.question;
+        this.signature=obf.signature;
+        this.solution=obf.solution;
+        this.status=obf.status;
+    }
     public void Show(){
         System.out.println("用户信息表述:");
         System.out.println("id:"+id+" nick_name:"+nick_name);
@@ -135,6 +151,21 @@ public class BasicInfo implements Serializable {
         System.out.println("question:"+question+" solution:"+solution);
         System.out.println("sex:"+(sex?"FEMALE":"MALE")+" signature:"+signature);
         System.out.println("status:"+status.toString());
+    }
+
+    public String ToString(){
+        String res=null;
+       res+="用户信息表述:\n";
+       res+="id:"+id+" nick_name:"+nick_name+"\n";
+        res+="age:"+age+" birthday:"+birthday+"\n";
+        res+="address:"+adrress+" mail_address:"+mail_address+"\n";
+        res+="id:"+id+" nick_name:"+nick_name+"\n";
+        res+="password:"+password+" phone_number:"+phone_number+"\n";
+        res+="job:"+job+" signature:"+signature+"\n";
+        res+="question:"+question+" solution:"+solution+"\n";
+        res+="sex:"+(sex?"FEMALE":"MALE")+" signature:"+signature+"\n";
+        res+="status:"+status.toString()+"\n";
+        return res;
     }
     public String getAdrress() {
         return adrress;
@@ -231,7 +262,7 @@ public class BasicInfo implements Serializable {
         this.status = status;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -239,7 +270,7 @@ public class BasicInfo implements Serializable {
         this.phone_number = phone_number;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 

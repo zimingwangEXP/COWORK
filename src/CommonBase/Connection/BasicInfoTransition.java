@@ -23,6 +23,10 @@ public class BasicInfoTransition//负责客户端到服务器的所有基础信�
         this.link=link;
         bytes=new byte[trans_size];
     }
+    public int getPort()
+    {
+       return  link.getPort();
+    }
     public BasicInfoTransition(Connection link,int buffer_size)
     {
         this.link = link;
@@ -125,8 +129,8 @@ public class BasicInfoTransition//负责客户端到服务器的所有基础信�
           if(result==LoginStatus.find)
           {
 
-            basic_info=(BasicInfo) link.ReadObject();
-            super_info=(SuperInfo)link.ReadObject();
+            basic_info.copy((BasicInfo) link.ReadObject());
+            super_info.copy((SuperInfo)link.ReadObject());
           }
           else{
               basic_info=null;

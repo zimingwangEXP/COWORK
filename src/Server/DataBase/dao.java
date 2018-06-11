@@ -12,6 +12,7 @@ import CommonBase.Data.*;
 import Server.ServerData.failrelation;
 import Server.ServerData.message;
 import Server.ServerData.relation;
+import com.sun.security.ntlm.Client;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -123,8 +124,13 @@ public class dao {
             String job=u.getJob();
             String signature=u.getSignature();
             String pwd=u.getPassword();
-            int age=u.getAge();
-            String ClientStatus=u.getStatus().toString();
+            Integer age=u.getAge();
+            String ClientStatus=null;
+            if(u.getStatus()!=null) {
+                ClientStatus = u.getStatus().toString();
+            }
+            else
+                ClientStatus=null;
             statement.execute("insert into basicinfo(uname,id,sex,email,question,solution,job,signature,pwd,age,ClientStatus) values(\'" + uname + "\',\'" + id + "\',sex ,\'" + email + "\',\'" + question + "\',\'" + solution + "\',\'" + job + "\',\'" + signature + "\',\'" + pwd + "\', age,\'" + ClientStatus + "\');");
         } catch (SQLException var7) {
             System.out.println("error in add Basic Info:" + u);
@@ -384,13 +390,13 @@ public class dao {
         ArrayList<relation> li = new ArrayList<relation>();
         try {
             statement = con.createStatement();
-            ResultSet re = statement.executeQuery("select * from relation where id1 ="+id+"||id2 ="+id+";");
+            ResultSet re = statement.executeQuery("select * from relation where id1 =\'" + id + "\'||id2 = \'" + id + "\';");
             while(re.next()){
                 li.add(new relation(re.getString(1),re.getString(2),re.getString(3)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            System.out.println("error in getRelation("+id+")");
+            System.out.println("error in getFriend("+id+")");
         }
         finally{this.close();}
         return li;
@@ -536,7 +542,7 @@ public class dao {
         ArrayList<Remark> li = new ArrayList<Remark>();
 
         try {
-            ResultSet e = statement.executeQuery("select * from remark where id1 =" + id + ";");
+            ResultSet e = statement.executeQuery("select * from remark where id1 =\'" + id + "\';");
 
             while(e.next()) {
                 li.add(new Remark(e.getString(1), e.getString(2), e.getString(3)));
@@ -585,7 +591,7 @@ public class dao {
         LinkedList li = new LinkedList();
 
         try {
-            ResultSet e = statement.executeQuery("select * from message where id1 =" + id + ";");
+            ResultSet e = statement.executeQuery("select * from message where id1 =\'" + id + "\';");
 
             while(e.next()) {
                 String str = e.getString(3);
@@ -637,10 +643,10 @@ public class dao {
         this.start();
         int ans = 0;
         try {
-            ResultSet rs=statement.executeQuery( "select * from good where id1 =" + id + ";");
-                rs.last();
-                ans=rs.getRow();
-                rs.beforeFirst();
+            ResultSet rs=statement.executeQuery( "select * from good where id1 =\'" + id + "\';");
+            rs.last();
+            ans=rs.getRow();
+            rs.beforeFirst();
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();

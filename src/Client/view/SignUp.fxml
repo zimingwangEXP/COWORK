@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.view.SignUpController">
+<AnchorPane prefHeight="600.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.view.SignUpHandle">
    <children>
       <GridPane vgap="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0">
         <columnConstraints>
@@ -35,28 +33,28 @@
             <Label text="性别" GridPane.rowIndex="5" />
             <Label text="出生日期" GridPane.rowIndex="7" />
             <Label text="电话" GridPane.rowIndex="8" />
-            <TextField fx:id="nickname" promptText="必填" GridPane.columnIndex="1" />
-            <PasswordField fx:id="password" promptText="必填" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <PasswordField fx:id="passwordConfirm" promptText="必填" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="phoneNumber" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <DatePicker fx:id="birthday" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <TextField fx:id="department" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="regist_nickname" promptText="必填" GridPane.columnIndex="1" />
+            <PasswordField fx:id="regist_password" promptText="必填" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PasswordField fx:id="regist_passwordConfirm" promptText="必填" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="regist_phoneNumber" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <DatePicker fx:id="regist_birthday" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="regist_department" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <HBox spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <children>
-                  <RadioButton mnemonicParsing="false" selected="true" text="MALE" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <RadioButton fx:id="regist_MALE" mnemonicParsing="false" selected="true" text="MALE" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <toggleGroup>
-                        <ToggleGroup fx:id="Gender" />
+                        <ToggleGroup fx:id="regist_gender" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" text="FEMALE" toggleGroup="$Gender" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <RadioButton fx:id="regist_FEMALE" mnemonicParsing="false" text="FEMALE" toggleGroup="$regist_gender" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
                   </RadioButton>
                </children>
             </HBox>
-            <TextField fx:id="age" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="signature" promptText="I can see you" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="regist_age" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="regist_signature" promptText="I can see you" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
       <Button layoutX="200.0" layoutY="475.0" mnemonicParsing="false" onAction="#handleOK" prefWidth="125.0" text="注册" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="50.0" />

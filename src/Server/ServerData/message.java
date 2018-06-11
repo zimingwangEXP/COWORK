@@ -1,6 +1,10 @@
 package Server.ServerData;
 
+
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class message implements Serializable
@@ -41,6 +45,6 @@ public class message implements Serializable
         this.content = content;
     }
     public String toString(){
-        return id1+","+id2+","+date.toLocaleString()+","+content;
+        return id1+","+id2+","+date.toString()+","+content;
     }
 }

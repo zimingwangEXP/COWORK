@@ -1,5 +1,6 @@
 package Client.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -18,6 +19,9 @@ public class MessageRecord {
 	}
 	public void setSendTime() {
 		sendTime=LocalDateTime.now();
+	}
+	public void setSendTime(LocalDateTime time){
+		sendTime=time;
 	}
 	public LocalDateTime getSendTime() {
 		return sendTime;

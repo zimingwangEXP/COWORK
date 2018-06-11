@@ -19,7 +19,12 @@ public class SuperInfo implements Serializable {//负责客户端到服务器端
       this.friend_list=friend_list;
       this.good=good;
   }
-
+  public void copy(SuperInfo osf) {
+      this.black_list=osf.black_list;
+      this.remark_list=osf.remark_list;
+      this.friend_list=osf.friend_list;
+      this.good=osf.good;
+  }
     public void setBlack_list(ArrayList<UserSnapShot> black_list) {
         this.black_list = black_list;
     }

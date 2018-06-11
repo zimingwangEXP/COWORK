@@ -151,21 +151,24 @@ public class Server extends Application {
                   SuperInfo sf=database_op.getSuperInfoById(id);
                   bf_trans.SendBasicInfo(bf);
                   bf_trans.SendSuperInfo(sf);
+                  //可以开一个线程
+                  BasicInfoTransition temp_bf_trans=new BasicInfoTransition(new Connection(new Socket(sub_server_list.get(id)[0],new Integer(sub_server_list.get(id)[1])+1)));
                   if(temp_info_list.containsKey(id))
                   {
                       ArrayList<TempSavedInfo> savedInfos=temp_info_list.get(id);
                       //可能会出现刚刚上线，立即下线的情况，为解决这种情况，本地必须保存缓冲
                       for(TempSavedInfo info:savedInfos)//什么时候应该中断连接
                       {
-                          bf_trans.SendMessage(info.getInfoType());
-                          bf_trans.TemplateSend(info);
-                          if(bf_trans.equals("file"))
+                          temp_bf_trans.SendMessage(info.getInfoType());
+                          temp_bf_trans.TemplateSend(info);
+                          if(info.getInfoType().equals("file"))
                           {
                               File file=new File("/temp/"+info.getFrom()+"/"+info.getTo()+"/"+(String)info.getContent());
                               bf_trans.SendFile(file);
                           }
                           savedInfos.remove(info);
                       }
+                      temp_bf_trans.SendMessage("terminal");
                   }
               }
               else

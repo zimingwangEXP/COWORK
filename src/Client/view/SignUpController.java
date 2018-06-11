@@ -1,6 +1,5 @@
 package Client.view;
-
-import Client.application.UserInfoBuffer;
+import CommonBase.CSLinker.CSLinker;
 import CommonBase.Connection.BasicInfoTransition;
 import CommonBase.Connection.Connection;
 import CommonBase.Data.BasicInfo;
@@ -20,6 +19,9 @@ import Client.util.Utility;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class SignUpController {
 	private Account account;
@@ -42,35 +44,22 @@ public class SignUpController {
 	@FXML
 	private DatePicker birthday;
 	@FXML
+	private RadioButton FEMALE;
+	@FXML
+	private RadioButton MALE;
 	private ToggleGroup gender=new ToggleGroup();
 	private boolean okClicked=false;
 	
 	public boolean inputValid() throws IOException, ClassNotFoundException {
-		//������չÿ���ı���Ҫ���LocalDateת��ΪString�ĸ�����
-		if(nickname.getText()==null||nickname.getText().length()==0) 
+		if(nickname.getText()==null||nickname.getText().length()==0)
 			errorMessage+="Please input one nickname\n";
-		if(password.getText()==null||password.getText().length()==0) 
+		if(password.getText()==null||password.getText().length()==0)
 			errorMessage+="Please input one password\n";
 		//System.out.println(password.getText()+" "+passwordConfirm.getText());
 		if(!password.getText().equals(passwordConfirm.getText()))
 			errorMessage+="The two password are not the same\n";
 		//if(gender.getSelectedToggle()==null)
 		//	errorMessage+="Please choose your gender";
-
-		BasicInfo bf=new BasicInfo.BasicInfoBuilder(nickname.getText(),null).SetAge(new Integer(age.getText()))
-				.SetJob(department.getText()).SetNick_name(nickname.getText()).SetMailAdress(null).
-						SetPhone_number(phoneNumber.getText()).SetBirthday(birthday.getValue().toString()).
-						SetSex(gender.getSelectedToggle().getUserData().toString().equals("MALE")).
-						SetSignatrue(signature.getText()).Builder();
-		UserInfoBuffer.bf_trans_to_server.SendRegistInfo(bf);
-		String id=UserInfoBuffer.bf_trans_to_server.ReceiveMessage();
-		/*
-		   返回登录界面，将id栏设为id
-		 */
-
-
-
-
 		if(errorMessage.length()!=0) {
 			Utility.showExceptionDialog(errorMessage, AlertType.WARNING);
 			errorMessage="";
@@ -86,7 +75,10 @@ public class SignUpController {
 		return account;
 	}
 	@FXML
-	public void initialize() {}
+	public void initialize() {
+		MALE.setToggleGroup(gender);
+		FEMALE.setToggleGroup(gender);
+	}
 	public SignUpController() {
 	}
 	public boolean isOkClicked() {
@@ -94,6 +86,7 @@ public class SignUpController {
 	}
 	@FXML
 	public void handleOK() {
+		System.out.println(nickname.getText());
 		try {
 			if(inputValid()) {
 				account=new Account();
@@ -101,14 +94,19 @@ public class SignUpController {
 				if(age.getText().length()!=0)
 					account.setAge(Integer.parseInt(age.getText()));
 				account.setDepartment(department.getText());
-				//account.setGender(gender.getSelectedToggle().getUserData().toString());
-				//�˴�bug�д��޸�
 				account.setNickname(nickname.getText());
 				account.setPassword(password.getText());
 				account.setBirthday(birthday.getValue());
 				account.setSignature(signature.getText());
 				account.setPhoneNumber(phoneNumber.getText());
-				Utility.showExceptionDialog("Your account:"+account.getID(), AlertType.INFORMATION);
+				BasicInfo bf=new BasicInfo.BasicInfoBuilder(nickname.getText(),null).SetAge(new Integer(age.getText()))
+						.SetJob(department.getText()).SetNick_name(nickname.getText()).SetMailAdress(null).
+								SetPhone_number(phoneNumber.getText()).SetBirthday(Date.from(birthday.getValue().
+								atStartOfDay(ZoneId.systemDefault()).toInstant()))
+						       .SetSex(gender.getSelectedToggle().toString().equals("FEMALE")).SetPassword(password.getText()).
+								SetSignatrue(signature.getText()).Builder();
+				String id=CSLinker.Regist(bf);
+				Utility.showExceptionDialog("Your account:"+id, AlertType.INFORMATION);
 				okClicked=true;
 			}
 			else 
