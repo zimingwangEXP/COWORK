@@ -3,6 +3,7 @@ import CommonBase.Connection.BasicInfoTransition;
 import CommonBase.Connection.Connection;
 import CommonBase.Data.*;
 import Server.DataBase.dao;
+import Server.ServerData.relation;
 
 import java.awt.*;
 import java.io.IOException;
@@ -14,7 +15,10 @@ public class Test {
 
     public static  void main(String[]args) throws IOException {
         //模拟客户端
-        for (UserSnapShot one : new dao().getFriend_list("100027"))
+      //  System.out.println(new dao().getFriend_list("100023")==null);
+       // System.out.println(new dao().getFriend_list("100027")==null);
+       // new dao().addFriendlist(new relation("100027","100023","default"));
+        for (UserSnapShot one : new dao().getFriend_list("100023"))
         {
               System.out.println(one.getId());
         }

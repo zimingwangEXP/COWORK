@@ -55,15 +55,16 @@ public class Server extends Application {
     }
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FillHelp();
-        this.primaryStage=primaryStage;
-        BuildGraph();
         exe.submit(new Runnable() {
             @Override//握手点监控器线程
             public void run() {
                 runServer();
             }
         });
+        FillHelp();
+        this.primaryStage=primaryStage;
+        BuildGraph();
+
         /*
         core code
         exe.shutdown();

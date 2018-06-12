@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -39,11 +40,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainThread extends Application {
    // public  class SignInHandle {
+    HashMap<String,ChatStage> StageList=new HashMap<>();
     TempSavedInfo temp;
     ExecutorService exe=Executors.newFixedThreadPool(20);
    public  Stage ReceiveStage=new Stage();
@@ -61,7 +64,22 @@ public class MainThread extends Application {
     TextArea content;
     TreeView<Button> tree;
     class FriendRequest{
-          Stage root=new Stage();
+        Stage root=new Stage();
+        BorderPane bp=new BorderPane();
+        Text content=new Text();
+        Button ok=new Button("我知道了");
+        public FriendRequest(String info)
+        {
+            content.setFont(Font.font(21));
+            content.setText(info);
+            bp.setCenter(content);
+            bp.setBottom(ok);
+            bp.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            bp.setPrefSize(308,97);
+            root.setScene(new Scene(bp));
+            root.show();
+            ok.setOnAction(e->{root.close();});
+        }
     }
     class ChatStage{
         UserSnapShot who=null;
@@ -151,6 +169,14 @@ public class MainThread extends Application {
             CSLinker.SendFriendRequestBack(temp.getFrom(),true);
             BasicInfo info= CSLinker.GetUserInfoById(temp.getFrom());
             CSLinker.sf.getFriend_list().add(new UserSnapShot(info.getId(),info.getNick_name(),info.getStatus(),info.getSignature(),"default"));
+            Button new_one=new Button(info.getNick_name()+"("+info.getId()+")"+"-----"+info.getStatus().toString());
+            new_one.setOnAction(b->{
+                ChatStage chat2=new ChatStage(CSLinker.sf.getFriend_list().get(tree.getSelectionModel().getSelectedIndex()));
+                StageList.put(chat2.who.getId(),chat2);
+                chat2.Show();
+            });
+
+            tree.getRoot().getChildren().add(new TreeItem<>(new_one));
             ReceiveStage.close();
         });
     }
@@ -214,7 +240,6 @@ public class MainThread extends Application {
          Tab friend_list=new Tab("好友列表");
          Tab chat=new Tab("会话");
         // tree=new TreeView<>();
-         friend_list.setContent(tree);
          group_tab.getTabs().addAll(friend_list,chat);
          HBox bottom=new HBox();
          BasicInfo=new Button("修改基本信息");
@@ -230,6 +255,7 @@ public class MainThread extends Application {
          BlackList=new Button("修改黑名单");
          BlackList.setPrefSize(67,59);
          BlackList.setWrapText(true);
+         //tree.setPrefSize();
          AddFriend.setOnAction(e->{
              Platform.runLater(new Runnable() {
                  @Override
@@ -248,14 +274,21 @@ public class MainThread extends Application {
              TreeItem<Button> item = new TreeItem<> (bt);
              bt.setOnAction(
                      e->{
-                         Alert al=new Alert(Alert.AlertType.INFORMATION);
-                         al.setContentText("effect");
-                         al.show();
+                         Platform.runLater(new Runnable() {
+                                               @Override
+                                               public void run() {
+                                                   System.out.println(tree.getSelectionModel().getSelectedIndex());
+                                 ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getSelectionModel().getSelectedIndex()+1));
+                         StageList.put(chat2.who.getId(),chat2);
+                         chat2.Show();
+                                               }
+                         });
                      }
              );
              rootItem.getChildren().add(item);
          }
           tree = new TreeView<> (rootItem);
+         friend_list.setContent(tree);
          bottom.getChildren().addAll(BasicInfo,AddFriend,Settings,BlackList);
          root.getChildren().addAll(combine,search,group_tab,bottom);
          BarStage.setScene(new Scene(root));
@@ -318,10 +351,21 @@ public class MainThread extends Application {
                 }
                 else if (back.equals("friend_request_back")) {
                     if(temp.getContent().equals("accept")) {
-                        MainThread.showExceptionDialog(temp.getFrom() + "接受了你的好友请求", Alert.AlertType.INFORMATION);
-                        BasicInfo info=CSLinker.GetUserInfoById(temp.getFrom());
-                        CSLinker.sf.getFriend_list().add(new UserSnapShot(temp.getFrom(),info.getNick_name(),info.getStatus(),info.getSignature(),"default"));
-                        CSLinker.UpdateSuperInfo(CSLinker.sf);
+                        Platform.runLater(new Runnable() {
+                                              @Override
+                                              public void run() {
+                                                  FriendRequest req = new FriendRequest("用户" + temp.getFrom() + "接受了你的好友请求");
+                                                  BasicInfo info = CSLinker.GetUserInfoById(temp.getFrom());
+                                                  Button new_one = new Button(info.getNick_name() + "(" + info.getId() + ")" + "-----" + info.getStatus().toString());
+                                                  new_one.setOnAction(b -> {
+                                                      ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getSelectionModel().getSelectedIndex()));
+                                                      StageList.put(chat2.who.getId(), chat2);
+                                                      chat2.Show();
+                                                  });
+                                                  tree.getRoot().getChildren().add(new TreeItem<>(new_one));
+                                                  CSLinker.sf.getFriend_list().add(new UserSnapShot(temp.getFrom(), info.getNick_name(), info.getStatus(), info.getSignature(), "default"));
+                                                  CSLinker.UpdateSuperInfo(CSLinker.sf);
+                                              }});
                     }
                     else
                         MainThread.showExceptionDialog(temp.getFrom()+"拒绝了你的好友请求",Alert.AlertType.INFORMATION);

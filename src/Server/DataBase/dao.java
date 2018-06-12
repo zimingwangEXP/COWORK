@@ -1,41 +1,37 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+package  Server.DataBase;
+        import java.math.BigInteger;
+        import java.security.MessageDigest;
+        import java.security.NoSuchAlgorithmException;
+        import java.sql.Connection;
+        import java.sql.DriverManager;
+        import java.sql.ResultSet;
+        import java.sql.SQLException;
+        import java.sql.Statement;
+        import java.sql.CallableStatement;
+        import java.sql.PreparedStatement;
+        import java.util.*;
+        import java.util.ArrayList;
 
-package Server.DataBase;
-import CommonBase.Data.BasicInfo;
-import CommonBase.Data.ClientStatus;
-import CommonBase.Data.Remark;
-import CommonBase.Data.UserSnapShot;
-import CommonBase.Data.*;
-import Server.ServerData.failrelation;
-import Server.ServerData.message;
-import Server.ServerData.relation;
-import com.sun.security.ntlm.Client;
+        import CommonBase.Data.*;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
-
-import static CommonBase.Data.BasicInfo.BasicInfoBuilder;
+        import Server.ServerData.failrelation;
+        import Server.ServerData.message;
+        import Server.ServerData.relation;
+        import CommonBase.Data.BasicInfo.*;
 
 
 public class dao {
-    protected static String username = "root";
-    protected static String pwd = "12345";
-    protected static String url = "jdbc:mysql://localhost:3306/icsy2";
-    protected static String driver = "com.mysql.jdbc.Driver";
-    protected static Connection con;
-    protected static Statement statement;
+    static String username = "root";
+    static String pwd = "12345";
+    static String url = "jdbc:mysql://localhost:3306/icsy2";
+    static String driver = "com.mysql.jdbc.Driver";
+    static Connection con;
+    static Statement statement;
     public static  HashMap<String,ClientStatus> help=new HashMap<>();
     public dao() {
         help.put("busy",ClientStatus.busy);
         help.put("online",ClientStatus.online);
-       help.put("suspend",ClientStatus.susupend);
+        help.put("suspend",ClientStatus.susupend);
         help.put("stealth",ClientStatus.stealth);
     }
 
@@ -86,12 +82,12 @@ public class dao {
         this.start();
         LinkedList li = new LinkedList();
 
-        BasicInfoBuilder b = new BasicInfoBuilder(null,null);
+        BasicInfoBuilder b = null;
         try {
             ResultSet e = statement.executeQuery("select * from basicinfo where id =" + id + ";");
 
             while (e.next()) {
-                b .SetNick_name(e.getString(1)).SetId(e.getString(2));
+                b = new BasicInfoBuilder(e.getString(1), e.getString(2));
                 b.SetSex(e.getBoolean(3));
                 b.SetMailAdress(e.getString(4));
                 b.SetQuestion(e.getString(5));
@@ -108,7 +104,28 @@ public class dao {
             this.close();
         }
 
-        return b.Builder().getId()==null?null:b.Builder();
+        return b.Builder();
+    }
+    public String judgeId(String id)
+    {
+        boolean flag = true;
+        this.start();
+        try {
+            ResultSet e = statement.executeQuery("select * from basicinfo where id =" + id + ";");
+
+            while (e.next()) {
+            }
+        } catch (SQLException var7) {
+            flag = false;
+        } finally {
+            this.close();
+        }
+
+        if (flag == true)return id;
+        else return null;
+    }
+    public SuperInfo getSuperInfoById(String id) {
+        return new SuperInfo(getBlack_list(id),getFriend_list(id),getRemark_list(id),getGood(id));
     }
     public Boolean addBasicInfo(BasicInfo u) {
         this.start();
@@ -124,13 +141,8 @@ public class dao {
             String job=u.getJob();
             String signature=u.getSignature();
             String pwd=u.getPassword();
-            Integer age=u.getAge();
-            String ClientStatus=null;
-            if(u.getStatus()!=null) {
-                ClientStatus = u.getStatus().toString();
-            }
-            else
-                ClientStatus=null;
+            int age=u.getAge();
+            String ClientStatus=u.getStatus()==null?null:u.getStatus().toString();
             statement.execute("insert into basicinfo(uname,id,sex,email,question,solution,job,signature,pwd,age,ClientStatus) values(\'" + uname + "\',\'" + id + "\',sex ,\'" + email + "\',\'" + question + "\',\'" + solution + "\',\'" + job + "\',\'" + signature + "\',\'" + pwd + "\', age,\'" + ClientStatus + "\');");
         } catch (SQLException var7) {
             System.out.println("error in add Basic Info:" + u);
@@ -139,40 +151,6 @@ public class dao {
             this.close();
         }
         return flag;
-    }
-
-
-
-
-    public String judgeId(String id)
-    {
-        boolean flag = true;
-        int ans=0;
-
-        this.start();
-        try {
-            ResultSet e = statement.executeQuery("select count(*) from basicinfo where id =" + id + ";");
-
-            while (e.next()) {
-                ans=e.getInt(1);
-            }
-        } catch (SQLException var7) {
-
-        } finally {
-            if(ans==0) {
-                flag=false;
-            }
-            this.close();
-        }
-
-        if (flag == true)return id;
-        else return null;
-    }
-
-
-
-    public SuperInfo getSuperInfoById(String id) {
-        return new SuperInfo(getBlack_list(id),getFriend_list(id),getRemark_list(id),getGood(id));
     }
     public Boolean deleteBasicInfo(String id) {
         this.start();
@@ -236,10 +214,10 @@ public class dao {
         int ans = 0;
         try {
             ResultSet rs=statement.executeQuery( "select * from basicinfo where ClientStatus =\"online\";");
-                rs.last();
-              ans=rs.getRow();
+            rs.last();
+            ans=rs.getRow();
             rs.beforeFirst();
-           } catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             this.close();
@@ -254,7 +232,7 @@ public class dao {
             ResultSet e = statement.executeQuery("select * from basicinfo where id =" + id + ";");
 
             while (e.next()) {
-              str = e.getString(11);
+                str = e.getString(11);
             }
         } catch (SQLException var7) {
             System.out.println("error in getStatus(" + id + ")");
@@ -266,23 +244,14 @@ public class dao {
     public Boolean SetStatus(String id,String status) {
         this.start();
         Boolean flag = Boolean.valueOf(true);
-        int ans =0;
         try {
-            ResultSet e =  statement.executeQuery("select count(*) from basicinfo where id =" + id + ";");
-            while (e.next()) {
-                ans=e.getInt(1);
-            }
-            if(ans!=0)
             statement.execute("update basicinfo set ClientStatus=\'" + status + "\' where id =\'" + id + "\';");
-            else
-                flag=false;
         } catch (SQLException var7) {
             System.out.println("error in set status:" + id);
-        }
-     /*  {
             flag = Boolean.valueOf(false);
+        } finally {
             this.close();
-        }*/
+        }
         return flag;
     }
     public Boolean updatePwd(String id,String pwd) {
@@ -303,6 +272,7 @@ public class dao {
     public String getPwd(String id) {
         this.start();
         String str=null;
+
         try {
             ResultSet e = statement.executeQuery("select * from basicinfo where id =" + id + ";");
 
@@ -333,10 +303,10 @@ public class dao {
         return li;
     }
     public ArrayList<UserSnapShot> getBlack_list(String id) {
-        this.start();
         ArrayList<failrelation> li = new ArrayList<failrelation>();
         ArrayList<UserSnapShot> black=new ArrayList<UserSnapShot>();
         li=getBlack(id);
+        this.start();
         try {
             for(int i = 0;i < li.size();i++) {
                 failrelation f=new failrelation();
@@ -344,9 +314,7 @@ public class dao {
                 ResultSet re = statement.executeQuery("select * from basicinfo where id = \'" + f.getId2() + "\';");
 
                 while (re.next()) {
-                    black.add(new UserSnapShot(re.getString(2)
-                            ,re.getString(1),
-                            help.get(re.getString(11)),re.getString(8),"blacklist"));
+                    black.add(new UserSnapShot(re.getString(2),re.getString(1),help.get(re.getString(11)),re.getString(8),"blacklist"));
                 }
             }
         } catch (SQLException var8) {
@@ -390,13 +358,13 @@ public class dao {
         ArrayList<relation> li = new ArrayList<relation>();
         try {
             statement = con.createStatement();
-            ResultSet re = statement.executeQuery("select * from relation where id1 =\'" + id + "\'||id2 = \'" + id + "\';");
+            ResultSet re = statement.executeQuery("select * from relation where id1 ="+id+"||id2 ="+id+";");
             while(re.next()){
                 li.add(new relation(re.getString(1),re.getString(2),re.getString(3)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            System.out.println("error in getFriend("+id+")");
+            System.out.println("error in getRelation("+id+")");
         }
         finally{this.close();}
         return li;
@@ -448,18 +416,20 @@ public class dao {
         return flag;
     }
     public ArrayList<UserSnapShot> getFriend_list(String id) {
-        this.start();
         ArrayList<relation> li = new ArrayList<relation>();
         ArrayList<UserSnapShot> Friend=new ArrayList<UserSnapShot>();
         li = getFriend(id);
+        this.start();
         try {
             for(int i = 0;i < li.size();i++) {
                 relation f=new relation();
                 f=li.get(i);
-                ResultSet re = statement.executeQuery("select * from basicinfo where id = \'" + f.getId2() + "\';");
+                String str = new String(f.getId1());
+                if(str.equals(id)) {str = new String(f.getId2());}
+                ResultSet re = statement.executeQuery("select * from basicinfo where id =" + str+ ";");
 
                 while (re.next()) {
-                    Friend.add(new UserSnapShot(re.getString(2),re.getString(1),help.get(re.getString(11)),re.getString(8),f.getgroupid()));
+                    Friend.add(new UserSnapShot(re.getString(2), re.getString(1), help.get(re.getString(11)), re.getString(8), f.getgroupid()));
                 }
             }
         } catch (SQLException var8) {
@@ -485,7 +455,6 @@ public class dao {
 
         return flag;
     }
-
     public List<message> getfailmessage(String id) {
         this.start();
         LinkedList li = new LinkedList();
@@ -520,7 +489,6 @@ public class dao {
 
         return flag;
     }
-
     public Boolean addRemark(Remark msg) {
         this.start();
         Boolean flag = Boolean.valueOf(true);
@@ -536,13 +504,12 @@ public class dao {
 
         return flag;
     }
-
     public ArrayList<Remark> getRemark_list(String id) /*是否有参数ID?*/ {
         this.start();
         ArrayList<Remark> li = new ArrayList<Remark>();
 
         try {
-            ResultSet e = statement.executeQuery("select * from remark where id1 =\'" + id + "\';");
+            ResultSet e = statement.executeQuery("select * from remark where id1 =" + id + ";");
 
             while(e.next()) {
                 li.add(new Remark(e.getString(1), e.getString(2), e.getString(3)));
@@ -591,7 +558,7 @@ public class dao {
         LinkedList li = new LinkedList();
 
         try {
-            ResultSet e = statement.executeQuery("select * from message where id1 =\'" + id + "\';");
+            ResultSet e = statement.executeQuery("select * from message where id1 =" + id + ";");
 
             while(e.next()) {
                 String str = e.getString(3);
@@ -643,7 +610,7 @@ public class dao {
         this.start();
         int ans = 0;
         try {
-            ResultSet rs=statement.executeQuery( "select * from good where id1 =\'" + id + "\';");
+            ResultSet rs=statement.executeQuery( "select * from good where id1 =" + id + ";");
             rs.last();
             ans=rs.getRow();
             rs.beforeFirst();

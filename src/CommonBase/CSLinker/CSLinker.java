@@ -20,12 +20,15 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /*
     Connection,BasicInfoTransition,SuperInfoTransition已经为客户端和服务器提供了多样的网络操作
     CSLinker按照客户端所需的网络功能分类并实现相关的操作以供客户端使用
  */
 public class CSLinker {
+   public static  ExecutorService CSexe=Executors.newFixedThreadPool(10);
    public static Log log=new Log();
    public static   int bias=2;
    public static BasicInfo bf=new BasicInfo.BasicInfoBuilder(null,null).Builder();

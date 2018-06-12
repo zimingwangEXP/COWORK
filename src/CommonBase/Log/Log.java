@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Log {
-    private File file=new File("/net_log.txt");
+    private File file=new File("D:/log.txt");
     private PrintWriter pw=null;
     private Scanner   sc=null;
     protected void test() {

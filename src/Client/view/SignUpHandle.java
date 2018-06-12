@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 public class SignUpHandle {
     //******************注册***************************
@@ -82,8 +83,8 @@ public class SignUpHandle {
         }catch(Exception e) {
             e.printStackTrace();
         }
+            }
 
-    }
     public void setCur(MainThread cur) {
         this.cur = cur;
     }
