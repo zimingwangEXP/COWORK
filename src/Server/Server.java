@@ -1,5 +1,6 @@
 package Server;
 
+import CommonBase.CSLinker.CSLinker;
 import CommonBase.Connection.Connection;
 import CommonBase.Data.*;
 import Server.DataBase.dao;
@@ -23,6 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import CommonBase.Connection.*;
 import CommonBase.Log.Log;
+
+import javax.swing.text.Position;
 
 public class Server extends Application {
     protected  dao database_op=new dao();
@@ -143,34 +146,44 @@ public class Server extends Application {
               ClientStatus status = bf_trans.ReceiveStatus();
               String realpassword = new dao().getPwd(id);
               if (realpassword.equals(password)) {
-                  sub_server_list.put(id, new String[]{socket.getInetAddress().toString(),
+                  sub_server_list.put(id, new String[]{socket.getInetAddress().getHostAddress(),
                           Integer.toString(socket.getPort())});
+                  System.out.println(socket.getPort()+"\n");
                   new dao().SetStatus(id, status.toString());
                   BroadCast("status_broad", status);
                   bf_trans.TemplateSend(LoginStatus.find);
                   SuperInfo sf=database_op.getSuperInfoById(id);
                   bf_trans.SendBasicInfo(bf);
                   bf_trans.SendSuperInfo(sf);
-                  //可以开一个线程
-                  BasicInfoTransition temp_bf_trans=new BasicInfoTransition(new Connection(new Socket(sub_server_list.get(id)[0],new Integer(sub_server_list.get(id)[1])+1)));
-                  if(temp_info_list.containsKey(id))
-                  {
-                      ArrayList<TempSavedInfo> savedInfos=temp_info_list.get(id);
-                      //可能会出现刚刚上线，立即下线的情况，为解决这种情况，本地必须保存缓冲
-                      for(TempSavedInfo info:savedInfos)//什么时候应该中断连接
-                      {
-                          temp_bf_trans.SendMessage(info.getInfoType());
-                          temp_bf_trans.TemplateSend(info);
-                          if(info.getInfoType().equals("file"))
-                          {
-                              File file=new File("/temp/"+info.getFrom()+"/"+info.getTo()+"/"+(String)info.getContent());
-                              bf_trans.SendFile(file);
-                          }
-                          savedInfos.remove(info);
-                      }
-                      temp_bf_trans.SendMessage("terminal");
+                  exe.submit(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     BasicInfoTransition temp_bf_trans = null;
+                                     try {
+                                         temp_bf_trans = new BasicInfoTransition(new Connection(new Socket(sub_server_list.get(id)[0], new Integer(sub_server_list.get(id)[1]) + CSLinker.bias)));
+                                     } catch (IOException e) {
+                                         e.printStackTrace();
+                                     }
+                                     if(temp_info_list.containsKey(id))
+                            {
+                                ArrayList<TempSavedInfo> savedInfos=temp_info_list.get(id);
+                                  //可能会出现刚刚上线，立即下线的情况，为解决这种情况，本地必须保存缓冲
+                               for(TempSavedInfo info:savedInfos)//什么时候应该中断连接
+                               {
+                                     temp_bf_trans.SendMessage(info.getInfoType());
+                                     temp_bf_trans.TemplateSend(info);
+                                     if(info.getInfoType().equals("file"))
+                                     {
+                                       File file=new File("/temp/"+info.getFrom()+"/"+info.getTo()+"/"+(String)info.getContent());
+                                       bf_trans.SendFile(file);
+                                     }
+                                     savedInfos.remove(info);
+                               }
+                                  temp_bf_trans.SendMessage("terminal");
+                               }
+              }});
+
                   }
-              }
               else
               {
                   bf_trans.TemplateSend(LoginStatus.password_error);
@@ -397,11 +410,13 @@ public class Server extends Application {
                 }
                 catch(IOException e)
                 {
+                    e.printStackTrace();
                     log.Write("在服务器处理函数发生IO异常\n");
                     LogoutHandle();
                 }
                 catch (ClassNotFoundException e)
                 {
+                    e.printStackTrace();
                     log.Write("读取到未知的数据类型\n");
                 }
             }while(hash_val>=0);

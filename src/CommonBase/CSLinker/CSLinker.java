@@ -26,9 +26,10 @@ import java.util.Observable;
     CSLinker按照客户端所需的网络功能分类并实现相关的操作以供客户端使用
  */
 public class CSLinker {
-   private static Log log=new Log();
-   private static BasicInfo bf=new BasicInfo.BasicInfoBuilder(null,null).Builder();
-   private static SuperInfo sf=new SuperInfo(null,null,null,null);
+   public static Log log=new Log();
+   public static   int bias=2;
+   public static BasicInfo bf=new BasicInfo.BasicInfoBuilder(null,null).Builder();
+   public static SuperInfo sf=new SuperInfo(null,null,null,null);
    public static BasicInfoTransition bf_trans_to_server;
    static {
       try {
@@ -50,6 +51,32 @@ public class CSLinker {
            bf_trans_to_server.SendMessage("regist");
            bf_trans_to_server.SendBasicInfo(bf);
            return bf_trans_to_server.ReceiveMessage();
+   }
+   public static  void SendFriendRequestBack(String to,boolean accept){
+      //很多情况未考虑
+      String back=null;
+      if(accept)
+         back="accept";
+      else
+         back="cancel";
+    String[]res= bf_trans_to_server.IdToIp(to);
+      if(res[0].equals("not_on_line")) {
+         bf_trans_to_server.SendMessage("friend_request_back");
+         //add_friend应背客户端接受线程处理
+         bf_trans_to_server.TemplateSend(new TempSavedInfo(bf.getId(),to,"friend_request_back",back));
+        // bf_trans_to_server.ReceiveMessage();
+      }
+      else {
+         BasicInfoTransition direct_connect= null;
+         try {
+            direct_connect = new BasicInfoTransition(new Connection(new Socket(res[0],new Integer(res[1])+CSLinker.bias)));
+         } catch (IOException e) {
+            log.StandardWrite("直接发送对好友的连接请求失败\n");
+            e.printStackTrace();
+         }
+         direct_connect.SendMessage("friend_request_back");
+         direct_connect.TemplateSend(new TempSavedInfo(bf.getId(),to,"friend_request_back",back));
+      }
    }
    public static  void UpdateBasicInfo(BasicInfo bf){
           CSLinker.bf=bf;
@@ -74,7 +101,7 @@ public class CSLinker {
       return bf_trans_to_server.ReceiveBasicInfo();
    }
    public static Integer SendFriendRequest(String id,String content){//返回值为1代表已经被对方加入黑名单，2代表此id不存在，3代表验证消息已离线发送成功,4代表验证消息已在线发送成功
-      String[] res=bf_trans_to_server.IdToIp("id");
+      String[] res=bf_trans_to_server.IdToIp(id);
       if(res[0].equals("not_on_line")) {
          bf_trans_to_server.SendMessage("add_friend");
          //add_friend应背客户端接受线程处理
@@ -85,19 +112,20 @@ public class CSLinker {
          else
             return 3;
       }
-      else if(res[1].equals("no_exist"))
+      else if(res[0].equals("no_exist"))
       {
          return 2;
       }
       else {
-         String ip=bf_trans_to_server.ReceiveMessage();
          BasicInfoTransition direct_connect= null;
          try {
-            direct_connect = new BasicInfoTransition(new Connection(new Socket(ip,12345)));
+            System.out.println("Sender:"+new Integer(new Integer(res[1]).intValue()+bias));
+            direct_connect = new BasicInfoTransition(new Connection(new Socket(res[0],new Integer(res[1])+bias)));
          } catch (IOException e) {
             log.StandardWrite("直接发送对好友的连接请求失败\n");
             e.printStackTrace();
          }
+         direct_connect.SendMessage("add_friend");
          direct_connect.TemplateSend(new TempSavedInfo(bf.getId(),id,"add_friend",content));
          return 4;
       }

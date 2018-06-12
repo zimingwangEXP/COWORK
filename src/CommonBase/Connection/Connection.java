@@ -46,7 +46,7 @@ public class Connection {
     }
 
     public Object ReadObject() throws IOException, ClassNotFoundException {
-        return input.readObject();
+     return input.readObject();
     }
 
     public Connection(Socket connection){
