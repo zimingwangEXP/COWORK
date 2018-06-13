@@ -156,9 +156,9 @@ public class CSLinker {
      else {
         BasicInfoTransition dir_connect = null;
         try {
-           dir_connect = new BasicInfoTransition(new Connection(new Socket(back[0], new Integer(back[1]))));
+           dir_connect = new BasicInfoTransition(new Connection(new Socket(back[0], new Integer(back[1])+CSLinker.bias)));
         } catch (IOException e) {
-           log.StandardWrite("发送文件时与好友的直接连接的建立失败\n");
+           log.StandardWrite("发送文本时与好友的直接连接的建立失败\n");
            e.printStackTrace();
         }
         bf_trans_to_server.SendMessage("save_history");

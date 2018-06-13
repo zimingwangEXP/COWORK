@@ -4,6 +4,7 @@ import CommonBase.CSLinker.CSLinker;
 import CommonBase.Connection.BasicInfoTransition;
 import CommonBase.Connection.Connection;
 import CommonBase.Data.*;
+import Server.ServerData.message;
 import com.sun.deploy.util.BlackList;
 import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.scenario.Settings;
@@ -33,20 +34,23 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sun.plugin2.message.Message;
 import sun.reflect.generics.tree.Tree;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainThread extends Application {
    // public  class SignInHandle {
     HashMap<String,ChatStage> StageList=new HashMap<>();
+    int total=0;
     TempSavedInfo temp;
     ExecutorService exe=Executors.newFixedThreadPool(20);
    public  Stage ReceiveStage=new Stage();
@@ -82,20 +86,20 @@ public class MainThread extends Application {
         }
     }
     class ChatStage{
-        UserSnapShot who=null;
-        Stage chat=new Stage();
-        SplitPane sp=new SplitPane();
-        VBox up=new VBox();
-        VBox down=new VBox();
-        Text sign=new Text();
-        TextArea up_text=new TextArea();
-        TextArea down_text=new TextArea();
-        Button vidio_chat=new Button("视频聊天");
-        Button audio_chat=new Button("语音聊天");
-        Button biaoqing=new Button("表情");
-        Button send_audio=new Button("发送语音");
-        Button send_file=new Button("上传文件");
-        Button send_text=new Button("发送文本");
+     public   UserSnapShot who=null;
+        public   Stage chat=new Stage();
+        public  SplitPane sp=new SplitPane();
+        public  VBox up=new VBox();
+        public  VBox down=new VBox();
+        public Text sign=new Text();
+        public TextArea up_text=new TextArea();
+        public TextArea down_text=new TextArea();
+        public Button vidio_chat=new Button("视频聊天");
+        public Button history=new Button("查询全部历史记录");
+        public Button biaoqing=new Button("表情");
+        public Button send_audio=new Button("发送语音");
+        public Button send_file=new Button("上传文件");
+        public Button send_text=new Button("发送文本");
         HBox control=new HBox();
          public  ChatStage(UserSnapShot who){
             this.who=who;
@@ -108,18 +112,35 @@ public class MainThread extends Application {
              control.setPrefHeight(47);
              control.setFillHeight(true);
              vidio_chat.setPrefSize(102,46);
-             audio_chat.setPrefSize(102,46);
+             history.setPrefSize(102,46);
              up_text.setPrefSize(599,271);
              biaoqing.setPrefSize(102,46);
              send_audio.setPrefSize(102,46);
              send_file.setPrefSize(102,46);
              send_text.setPrefSize(102,46);
              down_text.setPrefSize(598,140);
-             control.getChildren().addAll(vidio_chat,audio_chat,biaoqing,send_audio,send_file,send_text);
+             control.getChildren().addAll(vidio_chat,history,biaoqing,send_audio,send_file,send_text);
              down.getChildren().addAll(down_text,control);
+             history.setOnAction(e->{
+                 LinkedList<message> all_text= CSLinker.GetHistory(who.getId());
+                 String res=null;
+                 for(message one:all_text)
+                 {
+                     res+=one.getContent();
+                 }
+                 MainThread.showExceptionDialog(res,Alert.AlertType.INFORMATION);
+
+             });
              up.getChildren().addAll(sign,up_text);
              sp.setPrefSize(600,477);
              chat.setScene(new Scene(sp));
+             up_text.setEditable(false);
+             send_text.setOnAction(e->{
+                 String content= LocalTime.now().toString()+":\n"+CSLinker.bf.getNick_name()+": " +down_text.getText()+"\n";
+                 up_text.appendText(content);
+                 down_text.clear();
+                 CSLinker.SendText(who.getId(),content);
+             });
          }
          public void Show()
          {
@@ -171,7 +192,8 @@ public class MainThread extends Application {
             CSLinker.sf.getFriend_list().add(new UserSnapShot(info.getId(),info.getNick_name(),info.getStatus(),info.getSignature(),"default"));
             Button new_one=new Button(info.getNick_name()+"("+info.getId()+")"+"-----"+info.getStatus().toString());
             new_one.setOnAction(b->{
-                ChatStage chat2=new ChatStage(CSLinker.sf.getFriend_list().get(tree.getSelectionModel().getSelectedIndex()));
+
+                ChatStage chat2=new ChatStage(CSLinker.sf.getFriend_list().get(tree.getFocusModel().getFocusedIndex()-1));
                 StageList.put(chat2.who.getId(),chat2);
                 chat2.Show();
             });
@@ -224,7 +246,7 @@ public class MainThread extends Application {
          VBox help=new VBox();
          Text id=new Text(CSLinker.bf.getId());
          id.setFont(Font.font("Comic Sans MS",16));
-         Text  status=new Text(CSLinker.bf.getStatus().toString());
+         Text  status=new Text("on_line");
          status.setFont(Font.font("Comic Sans MS",16));
          Text nick_name=new Text(CSLinker.bf.getNick_name());
          nick_name.setFont(Font.font("Comic Sans MS",16));
@@ -278,7 +300,7 @@ public class MainThread extends Application {
                                                @Override
                                                public void run() {
                                                    System.out.println(tree.getSelectionModel().getSelectedIndex());
-                                 ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getSelectionModel().getSelectedIndex()+1));
+                                 ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getFocusModel().getFocusedIndex()-1));
                          StageList.put(chat2.who.getId(),chat2);
                          chat2.Show();
                                                }
@@ -323,6 +345,19 @@ public class MainThread extends Application {
         exe.submit(new KeepThread());
 
     }
+    class TextThread implements  Runnable{
+        UserSnapShot one=null;
+        public TextThread(UserSnapShot one){
+            this.one=one;
+        }
+        @Override
+        public void run() {
+            ChatStage t = new ChatStage(one);
+            t.up_text.appendText((String) temp.getContent());
+            StageList.put(one.getId(),t);
+            t.Show();
+        }
+    }
     class InnerThread implements  Runnable{
         Socket connection=null;
         BasicInfoTransition sub_trans=null ;
@@ -335,9 +370,28 @@ public class MainThread extends Application {
             String back=null;
                 back = sub_trans.ReceiveMessage();
                 temp=(TempSavedInfo)sub_trans.TemplateReceive();
-                if (back.equals("text")) {
+                if (back.equals("text"))
+                {
+                     if(StageList.containsKey(temp.getFrom()))
+                     {
+                         ChatStage t=StageList.get(temp.getFrom());
+                        t.up_text.appendText((String) temp.getContent());
+                     }
+                     else
+                     {
+                         UserSnapShot one=null;
+                         ArrayList<UserSnapShot> list=CSLinker.sf.getFriend_list();
+                         for(int i=0;i<list.size();i++)
+                         {
+                             one=list.get(i);
+                             if(one.getId().equals(temp.getFrom())) {
+                                Platform.runLater(new TextThread(one));
+                             }
+                         }
 
-                } else if (back.equals("file")) {
+                     }
+                }
+                else if (back.equals("file")) {
 
                 } else if (back.equals("add_friend")) {
                     Platform.runLater(new Runnable() {
@@ -358,7 +412,7 @@ public class MainThread extends Application {
                                                   BasicInfo info = CSLinker.GetUserInfoById(temp.getFrom());
                                                   Button new_one = new Button(info.getNick_name() + "(" + info.getId() + ")" + "-----" + info.getStatus().toString());
                                                   new_one.setOnAction(b -> {
-                                                      ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getSelectionModel().getSelectedIndex()));
+                                                      ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getFocusModel().getFocusedIndex()-1));
                                                       StageList.put(chat2.who.getId(), chat2);
                                                       chat2.Show();
                                                   });
