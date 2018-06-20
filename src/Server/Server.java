@@ -177,7 +177,7 @@ public class Server extends Application {
                                      if(info.getInfoType().equals("file"))
                                      {
                                        File file=new File("/temp/"+info.getFrom()+"/"+info.getTo()+"/"+(String)info.getContent());
-                                       bf_trans.SendFile(file);
+                                       bf_trans.SendFile(file,null);
                                      }
                                      savedInfos.remove(info);
                                }
@@ -362,7 +362,7 @@ public class Server extends Application {
                 }
             }
             database_op.addmessage(new message(id,tf.getTo(),new Date(),(String)tf.getContent()));
-            bf_trans.ReceiveFile(dic.toString());
+            bf_trans.ReceiveFile(dic.toString(),null);
             if (temp_info_list.containsKey(tf.getTo())) {
                 temp_info_list.get(tf.getTo()).add(tf);
             } else {
@@ -373,12 +373,25 @@ public class Server extends Application {
         }
        private void  SaveHistoryHandle(){
             String to=bf_trans.ReceiveMessage();
+           System.out.println(id);
+            System.out.println(to);
+
             String content=bf_trans.ReceiveMessage();
             database_op.addmessage(new message(id,to,new Date(),content));//获取当前时间
        }
        private void GetHistoryHandle(){
            String to=bf_trans.ReceiveMessage();
            bf_trans.TemplateSend(database_op.getMessage(id,to));
+       }
+       private void FileTranseBackHandle(){
+           TempSavedInfo tf=(TempSavedInfo)bf_trans.TemplateReceive();
+           if (temp_info_list.containsKey(tf.getTo())) {
+               temp_info_list.get(tf.getTo()).add(tf);
+           } else {
+               ArrayList<TempSavedInfo> temp = new ArrayList<>();
+               temp.add(tf);
+               temp_info_list.put(tf.getTo(), temp);
+           }
        }
         @Override
         public void run() {
@@ -408,6 +421,7 @@ public class Server extends Application {
                          case 14: FriendRequestBackHandle(); break;
                          case 15: SaveHistoryHandle(); break;
                          case 16: GetHistoryHandle(); break;
+                         case 17: FileTranseBackHandle(); break;
                      }
                 }
                 catch(IOException e)

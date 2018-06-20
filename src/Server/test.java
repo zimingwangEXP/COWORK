@@ -12,6 +12,6 @@ public class test {
         BasicInfoTransition bf_link=new BasicInfoTransition(new Connection(new Socket(InetAddress.getByName("localhost"),12345)));
        System.out.println(bf_link.ReceiveMessage());
         System.out.println(bf_link.ReceiveMessage());
-       bf_link.ReceiveFile("D:\\receive");
+      // bf_link.ReceiveFile("D:\\receive");
     }
 }

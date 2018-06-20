@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.view.FileTransportHandle">
    <children>
       <GridPane prefHeight="150.0" prefWidth="400.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="100.0">
         <columnConstraints>
@@ -21,17 +24,19 @@
         </rowConstraints>
          <children>
             <Label text="文件名" />
-            <Label text="Label" GridPane.columnIndex="1" />
+            <Label fx:id="file_name" text="Label" GridPane.columnIndex="1" />
             <Label text="文件大小" GridPane.rowIndex="1" />
-            <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="file_size" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="传输速度" GridPane.rowIndex="2" />
-            <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="cur_speed" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="剩余时间" GridPane.rowIndex="3" />
-            <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label fx:id="rest_time" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Button layoutX="315.0" layoutY="337.0" mnemonicParsing="false" text="Button" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="200.0" />
-      <Button layoutX="432.0" layoutY="337.0" mnemonicParsing="false" text="Button" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="70.0" />
-      <ProgressBar layoutX="161.0" layoutY="277.0" prefWidth="200.0" progress="0.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+      <Button layoutX="274.0" layoutY="337.0" mnemonicParsing="false" onAction="#StartHandle" text="开始" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="286.0" />
+      <Button layoutX="380.0" layoutY="337.0" mnemonicParsing="false" onAction="#PauseHandle" text="暂停/继续" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="150.0" />
+      <ProgressBar fx:id="bar" layoutX="25.0" layoutY="282.0" prefHeight="18.0" prefWidth="473.0" progress="0.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="102.0" />
+      <Button layoutX="89.0" layoutY="337.0" mnemonicParsing="false" onAction="#ChooseHandle" prefHeight="23.0" prefWidth="120.0" text="选择文件或目录" />
+      <ProgressIndicator fx:id="indicate" layoutX="519.0" layoutY="280.0" progress="0.0" />
    </children>
 </AnchorPane>

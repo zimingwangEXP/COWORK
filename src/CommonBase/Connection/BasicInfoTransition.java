@@ -1,5 +1,6 @@
 package CommonBase.Connection;
 
+import Client.view.FileTransportHandle;
 import CommonBase.Data.BasicInfo;
 import CommonBase.Data.ClientStatus;
 import CommonBase.Data.LoginStatus;
@@ -7,6 +8,9 @@ import CommonBase.Data.SuperInfo;
 import CommonBase.Log.Log;
 import  CommonBase.Data.UserSnapShot;
 import com.sun.xml.internal.bind.api.impl.NameConverter;
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -15,8 +19,10 @@ import java.util.HashMap;
 public class BasicInfoTransition//负责客户端到服务器的所有基础信息传输，客户端到客户端的文本，文件等非及时性传送
 {    private static DecimalFormat fm = null;
     Log log=new Log();
+    public long total=0;
     protected  Connection link=null;
     protected  int  trans_size=1024*1024;
+    DoubleProperty cur=new SimpleDoubleProperty(0);
     byte[] bytes=null;
     public BasicInfoTransition(Connection link)
     {
@@ -203,7 +209,7 @@ public class BasicInfoTransition//负责客户端到服务器的所有基础信�
     public ClientStatus ReceiveStatus() throws IOException, ClassNotFoundException {
         return (ClientStatus)link.ReadObject();
     }
-    public void SendFile(File file)
+    public void SendFile(File file, FileTransportHandle help)
     {
         if(!file.exists())
         {
@@ -223,7 +229,10 @@ public class BasicInfoTransition//负责客户端到服务器的所有基础信�
                     link.output.write(bytes, 0, length);
                     link.output.flush();
                     progress += length;
-                    System.out.print("| " + ((double) 100 * progress / file.length()) + "% |");
+                    cur.set((double) progress / file.length());
+                    if(help!=null)
+                    help.cur=cur;
+                    System.out.print("| " + 100.0*cur.get()+ "% |");
                 }
                 System.out.println();
                 System.out.println("======== 文件传输成功 ========");
@@ -250,19 +259,43 @@ public class BasicInfoTransition//负责客户端到服务器的所有基础信�
         }
         return length + "B";
     }
-    public void ReceiveFile(String name)
+    public void ReceiveFile(String name,FileTransportHandle help)
     {
         File dic=new File(name);
         if(dic.isDirectory()&&dic.exists())
         {
             try {
                 int length;
+                total=0;
+                long startTime=System.currentTimeMillis();
                 String filename=link.input.readUTF();
                 long size=link.input.readLong();
+                if(help!=null)
+                {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                           help.file_name.setText(filename);
+                           help.file_size.setText(getFormatFileSize(size));
+                        }
+                    });
+                }
                 FileOutputStream bridge = new FileOutputStream(dic.getAbsolutePath()+File.separatorChar+filename);
                 while ((length = link.input.read(bytes, 0, bytes.length)) != -1) {
                     bridge.write(bytes, 0,length);
                     bridge.flush();
+                    total+=length;
+                    if(help!=null)
+                    help.cur.set((double)total/size);
+                    long endTime=System.currentTimeMillis();//记录结束时间
+                    float excTime=(float)(endTime-startTime)/1000;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            help.cur_speed.setText(total/excTime+"b/s");
+                            help.rest_time.setText((double)(size-total)*excTime/total+"秒");
+                        }
+                    });
                 }
                 System.out.println("======== 文件接收成功 [File Name：" + dic.getName() + "] [Size：" + getFormatFileSize(dic.length()) + "] ========");
             }

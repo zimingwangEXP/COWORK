@@ -32,8 +32,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jdk.internal.org.objectweb.asm.Handle;
 import sun.plugin2.message.Message;
 import sun.reflect.generics.tree.Tree;
 
@@ -58,7 +60,9 @@ public class MainThread extends Application {
    public   Stage LoginStage=new Stage();
    public   Stage RegistStage=new Stage();
    public   Stage  ChatStage=new Stage();
+   public   Stage Person=new Stage();
    public Stage  FriendStage=new Stage();
+    public Stage  FileStage=new Stage();
     Button BasicInfo;
     Button  BlackList;
     Button Settings;
@@ -102,6 +106,7 @@ public class MainThread extends Application {
         public Button send_text=new Button("发送文本");
         HBox control=new HBox();
          public  ChatStage(UserSnapShot who){
+             System.out.println("who "+who.getId());
             this.who=who;
              sp.getItems().addAll(up,down);
              sp.setDividerPosition(0,0.6);
@@ -121,6 +126,9 @@ public class MainThread extends Application {
              down_text.setPrefSize(598,140);
              control.getChildren().addAll(vidio_chat,history,biaoqing,send_audio,send_file,send_text);
              down.getChildren().addAll(down_text,control);
+             send_file.setOnAction(e->{
+                 LoadFileTranse(who,true,null);
+             });
              history.setOnAction(e->{
                  LinkedList<message> all_text= CSLinker.GetHistory(who.getId());
                  String res=null;
@@ -140,6 +148,7 @@ public class MainThread extends Application {
                  up_text.appendText(content);
                  down_text.clear();
                  CSLinker.SendText(who.getId(),content);
+                 System.out.println("send_text"+who.getId());
              });
          }
          public void Show()
@@ -189,16 +198,15 @@ public class MainThread extends Application {
         ok.setOnAction(e->{
             CSLinker.SendFriendRequestBack(temp.getFrom(),true);
             BasicInfo info= CSLinker.GetUserInfoById(temp.getFrom());
-            CSLinker.sf.getFriend_list().add(new UserSnapShot(info.getId(),info.getNick_name(),info.getStatus(),info.getSignature(),"default"));
-            Button new_one=new Button(info.getNick_name()+"("+info.getId()+")"+"-----"+info.getStatus().toString());
-            new_one.setOnAction(b->{
+                CSLinker.sf.getFriend_list().add(new UserSnapShot(info.getId(), info.getNick_name(), info.getStatus(), info.getSignature(), "default"));
+                Button new_one = new Button(info.getNick_name() + "(" + info.getId() + ")" + "-----" + info.getStatus().toString());
+                new_one.setOnAction(b -> {
 
-                ChatStage chat2=new ChatStage(CSLinker.sf.getFriend_list().get(tree.getFocusModel().getFocusedIndex()-1));
-                StageList.put(chat2.who.getId(),chat2);
-                chat2.Show();
-            });
-
-            tree.getRoot().getChildren().add(new TreeItem<>(new_one));
+                    ChatStage chat2 = new ChatStage(CSLinker.sf.getFriend_list().get(tree.getFocusModel().getFocusedIndex() - 1));
+                    StageList.put(chat2.who.getId(), chat2);
+                    chat2.Show();
+                });
+                tree.getRoot().getChildren().add(new TreeItem<>(new_one));
             ReceiveStage.close();
         });
     }
@@ -219,6 +227,42 @@ public class MainThread extends Application {
             }catch (IOException e){
                 e.printStackTrace();
             }
+     }
+     public void LoadPerson(){
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainThread.class.getResource("/Client/view/PersonalZone.fxml"));
+            AnchorPane ap = (AnchorPane) loader.load();
+            Person.setScene(new Scene(ap));
+            Person.setTitle("修改个人信息");
+            FriendStage.getIcons().add(new Image("/Client/resources/Icon/ICSY.png"));
+            Person.show();
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+     }
+     public void LoadFileTranse(UserSnapShot who,boolean pd,BasicInfoTransition link){
+         try {
+             FXMLLoader loader = new FXMLLoader();
+             loader.setLocation(MainThread.class.getResource("/Client/view/FileTransport.fxml"));
+             AnchorPane pane = (AnchorPane) loader.load();
+             FileStage.setScene(new Scene(pane));
+             FileStage.setTitle("发送文件");
+             FileStage.getIcons().add(new Image("/Client/resources/Icon/ICSY.png"));
+             //LoginStage.initOwner(BarStage);
+             //LoginStage.initModality(Modality.WINDOW_MODAL);
+             FileTransportHandle signInController=loader.getController();
+             signInController.setMain(this);
+             signInController.setStage(FileStage);
+             signInController.setWho(who);
+             signInController.setPd(pd);
+             signInController.setSub_trans(link);
+             FileStage.show();
+
+         }catch (IOException e){
+             e.printStackTrace();
+         }
      }
     public void LoadFriendStage(){
         try {
@@ -286,7 +330,10 @@ public class MainThread extends Application {
                  }
              });
          });
-         Button Inbox =new Button("Inbox");
+         BasicInfo.setOnAction(e->{
+             LoadPerson();
+         });
+         Button Inbox =new Button("default");
          ImageView rootIcon=new ImageView(new Image("file:/Client/resources/Icon/login.png"));
          TreeItem<Button> rootItem = new TreeItem<> (Inbox, rootIcon);
          // Inbox.setOnAction(e->);
@@ -392,6 +439,13 @@ public class MainThread extends Application {
                      }
                 }
                 else if (back.equals("file")) {
+                      Platform.runLater(new Runnable() {
+                          @Override
+                          public void run() {
+                              MainThread.showExceptionDialog(temp.getFrom()+"向你发送了文件"+temp.getContent()+"",Alert.AlertType.INFORMATION);
+                              LoadFileTranse(new UserSnapShot(temp.getFrom(),null,null,null,null),false,sub_trans);
+                          }
+                      });
 
                 } else if (back.equals("add_friend")) {
                     Platform.runLater(new Runnable() {
@@ -421,8 +475,14 @@ public class MainThread extends Application {
                                                   CSLinker.UpdateSuperInfo(CSLinker.sf);
                                               }});
                     }
-                    else
-                        MainThread.showExceptionDialog(temp.getFrom()+"拒绝了你的好友请求",Alert.AlertType.INFORMATION);
+                    else {
+                        Platform.runLater(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainThread.showExceptionDialog(temp.getFrom() + "拒绝了你的好友请求", Alert.AlertType.INFORMATION);
+                                    }});
+                    }
                 }
             //}while(!back.equals("terminal"));
         }

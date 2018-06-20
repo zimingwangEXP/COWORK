@@ -5,5 +5,5 @@ public class KeyWords {
             "add_friend","update_blacklist","get_basic_info_by_id"
             ,"get_super_info_by_id","update_basic_info","update_super_info",
             "set_user_status","get_friend_list","save_text","save_file",
-            "friend_request_back","save_history","get_history"};
+            "friend_request_back","save_history","get_history","file_transe_back"};
 }

@@ -1,5 +1,6 @@
 package CommonBase.CSLinker;
 
+import Client.view.FileTransportHandle;
 import CommonBase.Connection.BasicInfoTransition;
 import CommonBase.Connection.Connection;
 import CommonBase.Connection.SuperInfoTransition;
@@ -162,7 +163,7 @@ public class CSLinker {
            e.printStackTrace();
         }
         bf_trans_to_server.SendMessage("save_history");
-        bf_trans_to_server.SendMessage(bf.getId());
+        bf_trans_to_server.SendMessage(id);
         bf_trans_to_server.SendMessage(content);
         dir_connect.SendMessage("text");
         dir_connect.TemplateSend(new TempSavedInfo(bf.getId(), id, "text", content));
@@ -170,7 +171,7 @@ public class CSLinker {
         return 0;
      }
   }
-   public static Integer SendFile(String id,File file){//0表示在线发送成功，1,表示离线发送，2表示此用户不存在
+   public static Integer SendFile(String id, File file, FileTransportHandle help){//0表示在线发送成功，1,表示离线发送，2表示此用户不存在
         String[] back=bf_trans_to_server.IdToIp(id);
         if(back[0].equals("no_exist"))
         {
@@ -180,14 +181,14 @@ public class CSLinker {
         {
            bf_trans_to_server.SendMessage("save_file");
            bf_trans_to_server.TemplateSend(new TempSavedInfo(bf.getId(),id,"file",file.getName()));
-           bf_trans_to_server.SendFile(file);
+           bf_trans_to_server.SendFile(file,help);
               return 1;
         }
         else
         {
            BasicInfoTransition dir_connect=null;
            try {
-               dir_connect=new BasicInfoTransition(new Connection(new Socket(back[0],new Integer(back[1]))));
+               dir_connect=new BasicInfoTransition(new Connection(new Socket(back[0],new Integer(back[1])+CSLinker.bias)));
            } catch (IOException e) {
               log.StandardWrite("发送文件时与好友的直接连接的建立失败\n");
               e.printStackTrace();
@@ -197,7 +198,7 @@ public class CSLinker {
            bf_trans_to_server.SendMessage(file.getName());
            dir_connect.SendMessage("file");
            dir_connect.TemplateSend(new TempSavedInfo(bf.getId(),id,"file",file.getName()));
-           dir_connect.SendFile(file);
+           dir_connect.SendFile(file,help);
 
            return 0;
         }
